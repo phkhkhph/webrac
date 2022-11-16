@@ -9,6 +9,7 @@ setlocale(LC_ALL,$locale);
 putenv('LC_ALL='.$locale);
 $ParamsFile = '/var/www/.var/adm1c-params.php';
 $Cluster = $_SESSION['cluster'];
+$HostName = strtoupper(gethostname());
 
 include $ParamsFile;
 
@@ -47,14 +48,10 @@ if ($Error == 0){
 $Cluster = $Clusters[cluster];
 $_SESSION[cluster] = $Cluster;
 echo ("<a href=\"settings.php\" class=ref>Настройки</a><a href=\"sessions.php\" class=ref>Сеансы</a>");
-echo "<h3>$Clusters[name] ($Clusters[host]:$Clusters[port])</h3>";
+echo "<h3>$Clusters[name] $Clusters[host]:$Clusters[port] ($HostName)</h3>";
 
 $RacOut = array();
 exec ("rac $Params[Server1C] infobase --cluster=$Clusters[cluster] summary list", $RacOut, $Error);
-
-// echo '<pre>';
-// print_r ($RacOut);
-// echo '</pre>';
 
 $Bases = array();
 if ($Error == 0){
@@ -72,18 +69,14 @@ if ($Error == 0){
   }
 ksort ($Bases,SORT_FLAG_CASE+SORT_STRING);
 
-// echo '<pre>';
-// print_r ($Bases);
-// echo '</pre>';
-
 echo "<fieldset style=\"width:600px;\" class=fieldset><legend>Информационные базы (".count($Bases)." шт.)</legend>";
 
 echo "<table width=100%><tr><td valign=top width=50%>";
 $Row = 0;
 foreach (array_keys ($Bases) as $Base){
-  echo "<a href=\"base.php?infobase={$Bases[$Base][infobase]}\" onClick=\"Waiting()\">{$Bases[$Base][name]}</a><br>";
+  echo "<a href=\"base.php?infobase={$Bases[$Base][infobase]}&basename={$Bases[$Base][name]}\" onClick=\"Waiting()\">{$Bases[$Base][name]}</a><br>";
   $Row++;
-  if ($Row > count($Bases)/2){
+  if ($Row >= count($Bases)/2){
     echo "</td><td valign=top width=50%>";
     $Row = 0;
     }
@@ -102,16 +95,6 @@ echo "</fieldset>";
 echo "</form>";
 
 echo "<div class = \"mess\" id=\"WaitPic\"><img class=\"wait\"src=\"wait2.gif\"></div>";
-
-// echo '<pre>';
-// echo "Файл $ParamsFile:\n";
-// print_r ($Params);
-// echo '</pre>';
-// 
-// echo '<pre>';
-// echo 'Массив $_POST:'."\n";
-// print_r ($_POST);
-// echo '</pre>';
 
 ?>
 
