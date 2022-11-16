@@ -51,23 +51,7 @@ echo "<tr><td align=right><label for=\"JobsDeny\">Блокировка регл�
 echo "</table><br>";
 echo "</fieldset>";
 
-echo "<fieldset class=fieldset><legend>Параметры доступа к базам 1С</legend><table>";
-echo "<tr><td align=right><label for=\"User1C\">Пользователь баз 1С</label></td><td><input type=\"text\" id=\"User1C\" name=\"User1C\" value=\"$Params[User1C]\"></td></tr>";
-echo "<tr><td align=right><label for=\"Pwd1C\">Пароль пользователя баз 1С</label></td><td><input type=\"password\" id=\"Pwd1C\" name=\"Pwd1C\" value=\"$Params[Pwd1C]\" title=\"$Params[Pwd1C]\"></td></tr>";
-echo "</table><br>";
-echo "</fieldset>";
-
 echo "<button style=\"float: right;\" type=\"submit\" value=\"apply\" name=\"apply\" id=\"apply\">Применить</button>";
 echo "</form><br>";
-
-// echo '<pre>';
-// echo "Файл $ParamsFile:\n";
-// print_r ($Params);
-// echo '</pre>';
-// 
-// echo '<pre>';
-// echo 'Массив $_POST:'."\n";
-// print_r ($_POST);
-// echo '</pre>';
 
 ?>
