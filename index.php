@@ -35,7 +35,7 @@ if (isset($_POST['create'])) {
   header('Location:'.$_SERVER['HTTP_REFERER']);
   }
 
-exec ("rac $Params[Server1C] cluster list", $RacOut, $Error);
+exec ("rac " . $Params['Server1C'] . " cluster list", $RacOut, $Error);
 $Clusters = array();
 if ($Error == 0){
   foreach ($RacOut as $RacStr) {
@@ -45,13 +45,19 @@ if ($Error == 0){
     $Clusters[$ArStr[0]] = $ArStr[1];
     }
   }
-$Cluster = $Clusters[cluster];
-$_SESSION[cluster] = $Cluster;
+$Cluster = $Clusters['cluster'];
+$_SESSION['cluster'] = $Cluster;
 echo ("<a href=\"settings.php\" class=ref>Настройки</a><a href=\"sessions.php\" class=ref>Сеансы</a>");
 echo "<h3>$Clusters[name] $Clusters[host]:$Clusters[port] ($HostName)</h3>";
 
+$RacOut = '';
+exec ("rac --version", $RacOut, $Error);
+if ($Error == 0){
+  echo "Версия платформы: " . $RacOut[0];
+}
+
 $RacOut = array();
-exec ("rac $Params[Server1C] infobase --cluster=$Clusters[cluster] summary list", $RacOut, $Error);
+exec ("rac " . $Params['Server1C'] . " infobase --cluster=" . $Params['Cluster'] . " summary list", $RacOut, $Error);
 
 $Bases = array();
 if ($Error == 0){
@@ -62,7 +68,7 @@ if ($Error == 0){
     $ArStr[1] = trim ($ArStr[1]);
     $Base[$ArStr[0]] = $ArStr[1];
     if ($RacStr == ""){
-      $Bases[$Base[name]] = $Base;
+      $Bases[$Base['name']] = $Base;
       $Base = array();
       }
     }
@@ -74,7 +80,7 @@ echo "<fieldset style=\"width:600px;\" class=fieldset><legend>Информаци
 echo "<table width=100%><tr><td valign=top width=50%>";
 $Row = 0;
 foreach (array_keys ($Bases) as $Base){
-  echo "<a href=\"base.php?infobase={$Bases[$Base][infobase]}&basename={$Bases[$Base][name]}\" onClick=\"Waiting()\">{$Bases[$Base][name]}</a><br>";
+  echo ("<a href=\"base.php?infobase=" . $Bases[$Base]['infobase'] . "&basename=" . $Bases[$Base]['name'] . "\" onClick=\"Waiting()\">" . $Bases[$Base]['name'] . "</a><br>");
   $Row++;
   if ($Row >= count($Bases)/2){
     echo "</td><td valign=top width=50%>";

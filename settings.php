@@ -13,16 +13,16 @@ if (isset($_POST['apply'])) {
   session_unset();
   }
 
-include $ParamsFile;
+if (file_exists($ParamsFile)) { include $ParamsFile; }
 
 echo "<form method=\"post\" style=\"width:600px;\">";
 echo "<a href=\"/adm1c/\" class=ref>На главную</a>";
 echo "<h3>Настройки</h3>";
 
 $LicDistrChecked = "";
-if ($Params[LicDistr] == "allow") {$LicDistrChecked = "checked";}
+if ($Params['LicDistr'] == "allow") {$LicDistrChecked = "checked";}
 $JobsDenyChecked = "";
-if ($Params[JobsDeny] == "yes") {$JobsDenyChecked = "checked";}
+if ($Params['JobsDeny'] == "yes") {$JobsDenyChecked = "checked";}
 
 echo "<fieldset class=fieldset><legend>Параметры подключения к серверу 1С</legend><table>";
 echo "<tr><td align=right><label for=\"Server1C\">Сервер 1C с запущенным RAS</label></td><td><input type=\"text\" id=\"Server1C\" name=\"Server1C\" value=\"$Params[Server1C]\"></td></tr>";
@@ -35,7 +35,7 @@ echo "<tr><td align=right><label for=\"DBServer\">Сервер баз данны
 echo "\n<tr><td align=right><label for=\"DBMS\">Тип СУБД</label></td><td><select id=\"DBMS\" name=\"DBMS\">";
 $DBMSAr = array ("PostgreSQL","MSSQLServer","IBMDB2","OracleDatabase");
 foreach ($DBMSAr as $El){
-  if ($Params[DBMS] == $El){
+  if ($Params['DBMS'] == $El){
     $ElStr = "<option selected>$El</option>";
     } else {
     $ElStr = "<option>$El</option>";

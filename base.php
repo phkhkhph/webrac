@@ -7,14 +7,15 @@ setlocale(LC_ALL,$locale);
 putenv('LC_ALL='.$locale);
 $ParamsFile = '/var/www/.var/adm1c-params.php';
 $ParamsBasesFile = '/var/www/.var/adm1c-bases.php';
-include $ParamsFile;
-include $ParamsBasesFile;
+
+if (file_exists($ParamsFile)) { include $ParamsFile; }
+if (file_exists($ParamsBasesFile)) { include $ParamsBasesFile; }
 include 'functions.php';
 
-$Cluster = $_SESSION[cluster];
-$InfoBase = $_GET[infobase];
-$BaseName = $_GET[basename];
-$LogPass = "--infobase-user=\"{$Bases[$BaseName][User1C]}\" --infobase-pwd=\"{$Bases[$BaseName][Pass1C]}\"";
+$Cluster = $_SESSION['cluster'];
+$InfoBase = $_GET['infobase'];
+$BaseName = $_GET['basename'];
+$LogPass = "--infobase-user=\"" . $Bases[$BaseName]['User1C'] . "\" --infobase-pwd=\"" . $Bases[$BaseName]['Pass1C'] . "\"";
 
 echo "<title>Управление базой $BaseName</title>";
 
@@ -34,10 +35,10 @@ if (isset($_POST['delete'])) {
   }
 
 if (isset($_POST['adduser'])) {
-  $Bases[$BaseName][User1C] = $_POST[User1C];
-  $Bases[$BaseName][Pass1C] = $_POST[Pass1C];
+  $Bases[$BaseName]['User1C'] = $_POST[User1C];
+  $Bases[$BaseName]['Pass1C'] = $_POST[Pass1C];
   file_put_contents ($ParamsBasesFile, '<?php $Bases = ' . var_export($Bases, true) . '; ?>');
-  $LogPass = "--infobase-user=\"{$Bases[$BaseName][User1C]}\" --infobase-pwd=\"{$Bases[$BaseName][Pass1C]}\"";
+  $LogPass = "--infobase-user=\"" . $Bases[$BaseName]['User1C'] . "\" --infobase-pwd=\"" . $Bases[$BaseName]['Pass1C'] . "\"";
   }
 
 if (isset($_POST['update'])) {
@@ -58,7 +59,7 @@ if (isset($_POST['update'])) {
   }
 
 $RacOut = array();
-exec ("rac $Params[Server1C] infobase --cluster=$Cluster info --infobase=$InfoBase $LogPass 2>&1", $RacOut, $Error);
+exec ("rac " . $Params['Server1C'] . " infobase --cluster=" . $Params['Cluster'] . " info --infobase=" . $InfoBase . " " . $LogPass . " 2>&1", $RacOut, $Error);
 
 echo "<form method=\"post\" style=\"width:600px;\">";
 echo "<p><a href=\"/adm1c/\" class=ref>На главную</a><a href=\"sessions.php\" class=ref>Сеансы</a><a href=\"settings.php\" class=ref>Настройки</a></p>";
@@ -75,8 +76,8 @@ if ($Error == 0){
   } else {
     if (strpos ($RacOut[0], "Недостаточно прав пользователя на информационную базу") !== False) {
       echo "<fieldset class=fieldset><legend>Для доступа к базе необходима авторизация</legend><table>";
-      echo "<tr><td align=right><label for=\"User1C\">Администратор базы</label></td><td><input type=\"text\" id=\"User1C\" name=\"User1C\" value=\"{$Bases[$BaseName][User1C]}\"></td></tr>";
-      echo "<tr><td align=right><label for=\"Pass1C\">Пароль</label></td><td><input type=\"password\" id=\"Pass1C\" name=\"Pass1C\" value=\"{$Bases[$BaseName][Pass1C]}\" title=\"$Params[Pass1C]\"></td></tr></table>";
+      echo "<tr><td align=right><label for=\"User1C\">Администратор базы</label></td><td><input type=\"text\" id=\"User1C\" name=\"User1C\" value=\"" . $Bases[$BaseName]['User1C'] . "\"></td></tr>";
+      echo "<tr><td align=right><label for=\"Pass1C\">Пароль</label></td><td><input type=\"password\" id=\"Pass1C\" name=\"Pass1C\" value=\"" . $Bases[$BaseName]['Pass1C'] . "\" title=\"$Params[Pass1C]\"></td></tr></table>";
       echo "<p align=left><font color=red>Имя пользователя и пароль к базе будут сохранены в открытом виде в файле конфигурации WEB сервера и будут доступны его администратору. Рекомендуется использовать не свои личные учётные данные, а имя и пароль учётной записи, предназначенной для администрирования баз (например, System).</font></p>";
       echo "<button style=\"float: right;\" type=\"submit\" value=\"adduser\" name=\"adduser\" id=\"adduser\" onClick=\"Waiting()\">Применить</button>";
       echo "</fieldset>";
@@ -109,7 +110,7 @@ if ($Error == 0){
     $SessDenyChecked = "checked";
     $SessDenyValue = "on";
     }
-  $Descr = str_replace('"', '', $Base[descr]);
+  $Descr = str_replace('"', '', $Base['descr']);
 
   echo "<fieldset class=fieldset><legend>Свойства базы</legend><table>";
 

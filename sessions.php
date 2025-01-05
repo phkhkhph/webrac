@@ -9,11 +9,11 @@ putenv('LC_ALL='.$locale);
 $ParamsFile = '/var/www/.var/adm1c-params.php';
 include $ParamsFile;
 include 'functions.php';
-$Cluster = $_SESSION[cluster];
+$Cluster = $_SESSION['cluster'];
 $HostName = strtoupper(gethostname());
 
 if (isset($_POST['terminate'])) {
-  SessionTerminate ($_POST[terminate]);
+  SessionTerminate ($_POST['terminate']);
   header('Location:'.$_SERVER['HTTP_REFERER']);
   }
 
@@ -30,10 +30,10 @@ if (isset($_POST['SessClose'])) {
   }
 
 echo "<a href=\"/adm1c/\" class=ref>На главную</a><a href=\"settings.php\" class=ref>Настройки</a>";
-echo "<h3>Сеансы на $Params[Server1C] ($HostName)</h3>";
+echo "<h3>Сеансы на " . $Params['Server1C'] . "(" . $HostName . ")</h3>";
 
 $RacOut = array();
-exec ("rac $Params[Server1C] infobase --cluster=$Cluster summary list", $RacOut, $Error);
+exec ("rac " . $Params['Server1C'] . " infobase --cluster=" . $Params['Cluster'] . " summary list", $RacOut, $Error);
 
 $Client = array(
   'BackgroundJob'=>'Фоновое задание',
@@ -58,7 +58,7 @@ if ($Error == 0){
   }
 
 $RacOut = array();
-exec ("rac $Params[Server1C] session list --cluster=$Cluster", $RacOut, $Error);
+exec ("rac " . $Params['Server1C'] . " session list --cluster=" . $Params['Cluster'], $RacOut, $Error);
 
 $Sessions = array();
 $UsersSess = array();
